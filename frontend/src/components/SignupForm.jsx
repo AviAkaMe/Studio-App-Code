@@ -41,7 +41,8 @@ export default function SignupForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
@@ -84,5 +85,6 @@ export default function SignupForm() {
         Back to Login
       </button>
     </form>
+    </div>
   )
 }

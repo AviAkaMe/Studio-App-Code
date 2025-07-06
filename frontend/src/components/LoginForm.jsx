@@ -28,7 +28,8 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
       {error && <p className="error">{error}</p>}
 
       <label htmlFor="email-input">
@@ -56,5 +57,6 @@ export default function LoginForm() {
       <button type="submit">Log In</button>
       <button type="button" onClick={() => navigate('/signup')}>Sign Up</button>
     </form>
+    </div>
   )
 }
