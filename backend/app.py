@@ -8,6 +8,10 @@ from extensions import db, migrate, jwt
 from routes import auth_bp, user_bp, lesson_bp, booking_bp
 from flask_cors import CORS
 
+# Import Prometheus WSGI app and dispatcher
+from prometheus_client import make_wsgi_app
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+
 load_dotenv()
 
 def create_app():
@@ -18,7 +22,12 @@ def create_app():
     # responses even when errors occur.
     CORS(app, supports_credentials=True)
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    # Configure SQLAlchemy: prefer DATABASE_URL, then SQLALCHEMY_DATABASE_URI, fallback to in-memory
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        os.getenv('DATABASE_URL')
+        or os.getenv('SQLALCHEMY_DATABASE_URI')
+        or 'sqlite:///:memory:'
+    )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
@@ -36,6 +45,11 @@ def create_app():
     # Auto-create all tables based on models
     with app.app_context():
         db.create_all()
+
+    # Mount Prometheus metrics endpoint at /metrics
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+        '/metrics': make_wsgi_app()
+    })
 
     return app
 
