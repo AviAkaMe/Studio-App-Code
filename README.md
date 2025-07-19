@@ -25,10 +25,13 @@ unchecked will create a normal student account.
 ## Running with Docker
 
 You can run the entire application (frontend, backend and database) using
-`docker-compose`.
+Docker Compose. The examples below assume the newer `docker compose` plugin
+(Compose V2). If you still use the older `docker-compose` Python tool, consider
+upgrading as it may fail with errors such as `KeyError: 'ContainerConfig'` when
+building the images.
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 The backend will be available on <http://localhost:5000> and the React
